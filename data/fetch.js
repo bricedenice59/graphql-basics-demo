@@ -1,5 +1,7 @@
-const fakeData = require("./MOCK_DATA.json");
+const fakeCourses = require("./MOCK_DATA.json");
+const fakeAuthors = require("./MOCK_AUTHORS.json");
 
 module.exports = {
-  fakeData,
+  fakeCourses,
+  fakeAuthors,
 };
