@@ -4,7 +4,16 @@ const _ = require("lodash");
 const resolvers = {
   Query: {
     //courses resolver
-    courses: () => {
+    courses: (_parent, args) => {
+      console.log(args);
+      if (args.limit != undefined && args.offset != undefined) {
+        const listCourses = _(fakeCourses)
+          .slice(args.offset)
+          .take(args.limit)
+          .value();
+        console.log(`returning ${listCourses.length} elements`);
+        return listCourses;
+      }
       return fakeCourses;
     },
     course: (_parent, args) => {

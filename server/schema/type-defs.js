@@ -21,7 +21,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    courses: [Course!]!
+    courses(limit: Int, offset: Int): [Course!]!
     course(id: ID!): Course
     authors: [Author!]!
     author(id: ID!): Author
