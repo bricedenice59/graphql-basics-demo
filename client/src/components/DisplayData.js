@@ -4,11 +4,18 @@ import { useState } from "react";
 
 const PAGE_SIZE = 30;
 const QUERY_ALL_COURSES_WITH_PAGINATION = new gql(`
-  query Courses($limit: Int, $offset: Int) {
-    courses(limit: $limit, offset: $offset) {
-      id
+query Courses($limit: Int, $offset: Int) {
+  courses(limit: $limit, offset: $offset) {
+    ... on CoursesFetchResult {
+      courses {
+        id
+      }
+    }
+    ... on CoursesErrorResult{
+      message
     }
   }
+}
 `);
 
 export default function DisplayData() {
@@ -19,8 +26,12 @@ export default function DisplayData() {
       offset: page * PAGE_SIZE,
     },
   });
+
   if (loading || !data) {
     return <h1>"data is loading"</h1>;
+  }
+  if (data.courses.__typename == "CoursesErrorResult") {
+    console.log(data.courses.message);
   }
   if (error) {
     console.log(error.message);
@@ -38,18 +49,23 @@ export default function DisplayData() {
         <span>Page {page + 1}</span>
         <button
           disabled={
-            data.courses.length === 0 || data.courses.length < PAGE_SIZE
+            data.courses.courses?.length === 0 ||
+            data.courses.courses?.length < PAGE_SIZE
           }
           onClick={() => setPage((prev) => prev + 1)}
         >
           Next
         </button>
       </nav>
-      <ul>
-        {data.courses.map((course) => {
-          return <li key={course.id}>{course.id}</li>;
-        })}
-      </ul>
+      {data.courses.__typename == "CoursesErrorResult" ? (
+        <div>{data.courses.message}</div>
+      ) : (
+        <ul>
+          {data.courses.courses.map((course) => {
+            return <li key={course.id}>{course.id}</li>;
+          })}
+        </ul>
+      )}
     </>
   );
 }

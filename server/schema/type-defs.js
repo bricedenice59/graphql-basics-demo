@@ -21,11 +21,19 @@ const typeDefs = gql`
   }
 
   type Query {
-    courses(limit: Int, offset: Int): [Course!]!
+    courses(limit: Int, offset: Int): CoursesResult
     course(id: ID!): Course
     authors: [Author!]!
     author(id: ID!): Author
   }
+
+  type CoursesFetchResult {
+    courses(limit: Int, offset: Int): [Course!]!
+  }
+  type CoursesErrorResult {
+    message: String!
+  }
+  union CoursesResult = CoursesFetchResult | CoursesErrorResult
 `;
 
 module.exports = { typeDefs };

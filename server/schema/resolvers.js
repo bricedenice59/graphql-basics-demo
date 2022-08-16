@@ -5,16 +5,18 @@ const resolvers = {
   Query: {
     //courses resolver
     courses: (_parent, args) => {
-      console.log(args);
+      if (fakeCourses.length == 0)
+        return { message: "An error occured, no input data available!" };
+
       if (args.limit != undefined && args.offset != undefined) {
         const listCourses = _(fakeCourses)
           .slice(args.offset)
           .take(args.limit)
           .value();
         console.log(`returning ${listCourses.length} elements`);
-        return listCourses;
+        return { courses: listCourses };
       }
-      return fakeCourses;
+      return { courses: fakeCourses };
     },
     course: (_parent, args) => {
       const id = args.id;
@@ -45,6 +47,18 @@ const resolvers = {
       //   `number of courses found for this author: ${listCourses.length}`
       // );
       return listCourses;
+    },
+  },
+
+  CoursesResult: {
+    __resolveType(obj) {
+      if (obj.courses) {
+        return "CoursesFetchResult";
+      }
+      //there was an error
+      if (obj.message) return "CoursesErrorResult";
+
+      return null;
     },
   },
 };
