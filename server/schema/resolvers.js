@@ -5,6 +5,7 @@ const resolvers = {
   Query: {
     //courses resolver
     courses: (_parent, args) => {
+      //fakeCourses.splice(0, fakeCourses.length); //=> simulate an error when fetching data from db (fakeCourses.length =0)
       if (fakeCourses.length == 0)
         return { message: "An error occured, no input data available!" };
 

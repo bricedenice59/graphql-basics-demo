@@ -26,15 +26,16 @@ export default function DisplayData() {
       offset: page * PAGE_SIZE,
     },
   });
+  if (error) {
+    console.log(error.message);
+    return <h1>error: {error.message}</h1>;
+  }
 
   if (loading || !data) {
     return <h1>"data is loading"</h1>;
   }
   if (data.courses.__typename == "CoursesErrorResult") {
     console.log(data.courses.message);
-  }
-  if (error) {
-    console.log(error.message);
   }
 
   return (
